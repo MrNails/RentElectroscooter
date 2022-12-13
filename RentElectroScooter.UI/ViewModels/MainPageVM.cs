@@ -153,7 +153,22 @@ namespace RentElectroScooter.UI.ViewModels
 
                 if (UserProfile == null)
                 {
-                    contentViewContainer.Children.Add(_serviceProvider.GetService<SignInContentView>());
+                    var authCV = _serviceProvider.GetService<SignInContentView>();
+                    var regCV = _serviceProvider.GetService<RegisterContentView>();
+
+                    authCV.MoveToRegistrationViewCommand ??= new Command(obj =>
+                    {
+                        regCV.MoveToAuthorizationViewCommand ??= new Command(obj =>
+                        {
+                            contentViewContainer.Children.Clear();
+                            contentViewContainer.Children.Add(authCV);
+                        });
+
+                        contentViewContainer.Children.Clear();
+                        contentViewContainer.Children.Add(regCV);
+                    });
+
+                    contentViewContainer.Children.Add(authCV);
                 }
             }
             catch (Exception ex)

@@ -31,13 +31,14 @@ public static class MauiProgram
 
         builder.Logging.AddSerilog(SetupLogger(builder.Configuration), dispose: true);
         builder.Services.AddSingleton<MainPage>()
-            .AddTransient<SignInContentView>()
-            .AddTransient<MainPageVM>()
-            .AddTransient<UserViewModel>();
+            .AddScoped<SignInContentView>()
+            .AddScoped<RegisterContentView>()
+            .AddScoped<MainPageVM>()
+            .AddScoped<UserVM>();
 
         builder.Services.AddSingleton<Session>()
-            .AddTransient<ElectroScooterService>()
-            .AddTransient<UserService>();
+            .AddScoped<ElectroScooterService>()
+            .AddScoped<UserService>();
 
         builder.Services.AddTransient(services => services.GetService<ILoggerProvider>().CreateLogger(string.Empty));
 

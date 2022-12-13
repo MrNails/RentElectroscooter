@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using RentElectroScooter.UI.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,21 +11,21 @@ using System.Threading.Tasks;
 namespace RentElectroScooter.UI.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class SignInContentView : ContentView, INotifyPropertyChanged
+    public partial class SignInContentView : ContentView
     {
-        private IRelayCommand _moveToRegistrationViewCommand;
+        private Command _moveToRegistrationViewCommand;
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public SignInContentView()
+        public SignInContentView(UserVM userViewModel)
         {
             InitializeComponent();
+
+            BindingContext = userViewModel;
 
             VerticalOptions = LayoutOptions.Center;
             HorizontalOptions = LayoutOptions.Center;
         }
 
-        public IRelayCommand MoveToRegistrationViewCommand
+        public Command MoveToRegistrationViewCommand
         {
             get => _moveToRegistrationViewCommand;
             set
@@ -34,8 +35,5 @@ namespace RentElectroScooter.UI.Views
                 OnPropertyChanged();
             }
         }
-
-        private void OnPropertyChanged([CallerMemberName] string prop = "") 
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
     }
 }

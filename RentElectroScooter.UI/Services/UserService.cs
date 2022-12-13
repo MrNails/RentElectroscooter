@@ -44,5 +44,18 @@ namespace RentElectroScooter.UI.Services
 
             return (await result.Content.ReadAsStringAsync(), result.StatusCode);
         }
+
+        public async Task<(UserProfile, System.Net.HttpStatusCode)> GetProfile(string jwt)
+        {
+            if (string.IsNullOrEmpty(jwt)) throw new ArgumentException("Jwt cannot be empty.");
+
+            using var requestMsg = new HttpRequestMessage(HttpMethod.Post, "profile");
+
+            requestMsg.Headers.Add("Bearer", jwt);
+
+            var result = await _httpClient.SendAsync(requestMsg);
+
+            return (await result.Content.ReadFromJsonAsync<UserProfile>(), result.StatusCode);
+        }
     }
 }

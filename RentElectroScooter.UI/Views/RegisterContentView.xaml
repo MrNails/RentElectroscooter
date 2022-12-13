@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<ContentView  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-              xmlns:vm="clr-namespace:RentElectroScooter.UI.ViewModels"
-              xmlns:dto="clr-namespace:RentElectroScooter.CoreModels.DTO;assembly=RentElectroScooter.CoreModels"
-              xmlns:converters="clr-namespace:RentElectroScooter.UI.Services.Converters"
-              x:Class="RentElectroScooter.UI.Views.SignInContentView"
-              WidthRequest="300"
-              HeightRequest="400"
-              x:Name="SignInCV">
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             x:Class="RentElectroScooter.UI.Views.RegisterContentView"
+             xmlns:vm="clr-namespace:RentElectroScooter.UI.ViewModels"
+             xmlns:dto="clr-namespace:RentElectroScooter.CoreModels.DTO;assembly=RentElectroScooter.CoreModels"
+             xmlns:converters="clr-namespace:RentElectroScooter.UI.Services.Converters"
+             WidthRequest="300"
+             HeightRequest="450"
+             x:Name="RegisterCV">
     <ContentView.Resources>
-        <converters:AuthDataConverter x:Key="AuthDataConvert"/>
+        <converters:RegistrationDataConverter x:Key="RegistrationDataConvert"/>
     </ContentView.Resources>
     <ContentView.Content>
         <Border BackgroundColor="{StaticResource Cyan200Accent}"
@@ -18,12 +18,13 @@
             <Grid CascadeInputTransparent="False">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="0.9*"/>
                     <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
                 </Grid.RowDefinitions>
 
-                <Label Text="Authorization" FontSize="20"
+                <Label Text="Registration" FontSize="20"
                        VerticalOptions="Center"
                        HorizontalOptions="Center"
                        Margin="10,25,10,05"/>
@@ -38,10 +39,16 @@
                                      Style="{StaticResource AuthStackLayoutStyle}">
                     <Label Text="Password"/>
                     <Entry x:Name="PasswordEntry" IsPassword="True"/>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Grid.Row="3" 
+                                     Style="{StaticResource AuthStackLayoutStyle}">
+                    <Label Text="Name"/>
+                    <Entry x:Name="NameEntry" />
 
                     <Button x:DataType="{x:Null}"
-                            BindingContext="{x:Reference SignInCV}"
-                            Text="Register" 
+                            BindingContext="{x:Reference RegisterCV}"
+                            Text="Sign In" 
                             FontSize="14" 
                             TextColor="{StaticResource Blue100Accent}"
                             BackgroundColor="Transparent"
@@ -49,18 +56,19 @@
                             HorizontalOptions="End"
                             VerticalOptions="Center"
                             Margin="0,0,-10,0" 
-                            Command="{Binding MoveToRegistrationViewCommand}"/>
+                            Command="{Binding MoveToAuthorizationViewCommand}"/>
                 </VerticalStackLayout>
 
-                <Button Grid.Row="3" Text="Accept" 
+                <Button Grid.Row="4" Text="Accept" 
                         WidthRequest="200"
                         VerticalOptions="Center"
                         HorizontalOptions="Center"
-                        Command="{Binding AuthorizeCommand}">
+                        Command="{Binding RegisterCommand}">
                     <Button.CommandParameter>
-                        <MultiBinding Converter="{StaticResource AuthDataConvert}">
+                        <MultiBinding Converter="{StaticResource RegistrationDataConvert}">
                             <Binding Source="{x:Reference LoginEntry}" Path="Text"/>
                             <Binding Source="{x:Reference PasswordEntry}" Path="Text"/>
+                            <Binding Source="{x:Reference NameEntry}" Path="Text"/>
                         </MultiBinding>
                     </Button.CommandParameter>
                 </Button>

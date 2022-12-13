@@ -95,7 +95,14 @@ namespace RentElectroScooter.API.Controllers
             if (userIdS == null)
                 return Unauthorized();
 
-            return new UserProfile();
+            var userId = new Guid(userIdS);
+
+            var userProfile = _dBContext.UserProfiles.FirstOrDefault(up => up.UserId == userId);
+
+            if (userProfile == null)
+                return NotFound("User profile not found.");
+
+            return userProfile;
         }
     }
 }
