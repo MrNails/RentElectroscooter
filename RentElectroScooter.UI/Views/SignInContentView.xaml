@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+            x:Class="RentElectroScooter.UI.Views.SignInContentView"
+              WidthRequest="300"
+              HeightRequest="400">
+    <ContentView.Resources>
+        <Style TargetType="StackLayout" x:Key="SignInStackLayoutStyle">
+            <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="Spacing" Value="5" />
+        </Style>
+    </ContentView.Resources>
+    <ContentView.Content>
+        <Border BackgroundColor="{StaticResource Cyan200Accent}"
+                StrokeShape="RoundRectangle 40">
+            <Grid CascadeInputTransparent="False">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <Label Text="Authorization" FontSize="20"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Center"
+                       Margin="10,25,10,05"/>
+
+                <VerticalStackLayout Grid.Row="1" 
+                                     Style="{StaticResource SignInStackLayoutStyle}"
+                                     WidthRequest="200">
+                    <Label Text="Login"/>
+                    <Entry Text="1"/>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Grid.Row="2" 
+                                     Style="{StaticResource SignInStackLayoutStyle}"
+                                     WidthRequest="200">
+                    <Label Text="Password"/>
+                    <Entry Text="1"/>
+                    
+                    <Button Text="Register" 
+                        FontSize="14" 
+                        TextColor="{StaticResource Blue100Accent}"
+                        BackgroundColor="Transparent"
+                        BorderWidth="0"
+                        HorizontalOptions="End"
+                        VerticalOptions="Center"
+                        Margin="0,0,-10,0"/>
+                </VerticalStackLayout>
+
+                <HorizontalStackLayout Grid.Row="3" 
+                                       Style="{StaticResource SignInStackLayoutStyle}"
+                                       Spacing="20">
+                    <Button Text="Accept" WidthRequest="100"/>
+                    <Button Text="Cancel" WidthRequest="100"/>
+                </HorizontalStackLayout>
+            </Grid>
+        </Border>
+    </ContentView.Content>
+</ContentView>

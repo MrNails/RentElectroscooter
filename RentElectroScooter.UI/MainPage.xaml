@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="RentElectroScooter.UI.MainPage"
+             xmlns:vm="clr-namespace:RentElectroScooter.UI.ViewModels"
+             xmlns:local="clr-namespace:RentElectroScooter.CoreModels.Models;assembly=RentElectroScooter.CoreModels"
+             Appearing="ContentPage_Appearing"
+             x:Name="MainPageCP">
+    <ContentPage.Resources>
+        <Style x:Key="MainScreenButton" TargetType="Button">
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="Padding" Value="7"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="CornerRadius" Value="6"/>
+        </Style>
+    </ContentPage.Resources>
+    <Grid x:DataType="vm:MainPageVM">
+        <Grid.ColumnDefinitions >
+            <ColumnDefinition  Width="{OnPlatform WinUI=250, Default=1.7*}"/>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0" Grid.ColumnSpan="2" x:Name="ContentGrid"
+              BackgroundColor="#FFFFFA">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition />
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+            </Grid.GestureRecognizers>
+
+            <ActivityIndicator Grid.RowSpan="4" Grid.ColumnSpan="4" 
+                           IsVisible="{Binding IsBusy}"
+                           IsRunning="{Binding IsBusy}"/>
+
+            <HorizontalStackLayout Grid.ColumnSpan="5" Padding="5" 
+                               Spacing="10" 
+                               FlowDirection="RightToLeft"
+                               BackgroundColor="{StaticResource Gray200 }">
+                <Label>
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Balance: "/>
+                            <Span Text="{Binding UserProfile.Balance, FallbackValue=0, Mode=OneWay}"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+            </HorizontalStackLayout>
+
+            <StackLayout Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="2">
+                <ListView x:Name="AvailableElectroScooters"
+                      ItemsSource="{Binding Items}"
+                      ItemSelected="AvailableElectroScooters_ItemSelected">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell x:DataType="local:ElectroScooter">
+                                <ViewCell.ContextActions>
+                                    <MenuItem Text="Additional Info" />
+                                </ViewCell.ContextActions>
+                                <VerticalStackLayout Spacing="5">
+                                    <Label FontSize="16">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="Electro scooter name: "/>
+                                                <Span Text="{Binding Name}"/>
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                    <Label FontSize="16">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="Position: "/>
+                                                <Span Text="{Binding Position}"/>
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                </VerticalStackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
+
+            <ImageButton Grid.Row="1" Grid.Column="0" 
+                         x:Name="SideMenuButton"
+                         WidthRequest="65" HeightRequest="65"
+                         Padding="5" Margin="20"
+                         VerticalOptions="Center" HorizontalOptions="Center"
+                         BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray500}}"
+                         CornerRadius="23"
+                         Source="icons8_menu_rounded.png"
+                         Clicked="ImageButton_Clicked"/>
+
+            <HorizontalStackLayout HorizontalOptions="CenterAndExpand"
+                               Grid.ColumnSpan="2"
+                               Grid.Row="3">
+                <Button Text="Take scooter" 
+                        Style="{StaticResource MainScreenButton}"
+                        Command="{Binding RentElectroScooterCommand}" 
+                        CommandParameter="{Binding Source={x:Reference AvailableElectroScooters}, Path=SelectedItem}"/>
+                <Button Text="Return scooter"
+                        Style="{StaticResource MainScreenButton}"
+                        Command="{Binding ReturnElectroScooterCommand}" 
+                        CommandParameter="{Binding Source={x:Reference AvailableElectroScooters}, Path=SelectedItem}"/>
+            </HorizontalStackLayout>
+        </Grid>
+
+        <VerticalStackLayout x:Name="MenuGrid" 
+              BackgroundColor="White"
+              ZIndex="-1" Spacing="5">
+
+            <VerticalStackLayout  Margin="0,0,0,10">
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding MoveToProfilePageCommand}" 
+                                          CommandParameter="{x:Reference FrontContentViewContainer}"/>
+                </VerticalStackLayout.GestureRecognizers>
+                
+                <Label Text="{Binding UserProfile.Name, FallbackValue=Unauthorized}" FontSize="18"/>
+                <Label Text="Edit Profile" FontSize="14"
+                       VerticalOptions="Center"/>
+            </VerticalStackLayout>
+            
+            <Line HeightRequest="1" BackgroundColor="Gray"/>
+            
+            <VerticalStackLayout Spacing="10"
+                                 Margin="0,0,0,20">
+
+                <Label Text="Settings" FontSize="14"/>
+
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+
+        <Grid x:Name="FrontContentViewContainer" Grid.ColumnSpan="2" 
+              ZIndex="-1" 
+              BackgroundColor="#AA919191"
+              CascadeInputTransparent="False">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1"/>
+            </Grid.GestureRecognizers>
+        </Grid>
+
+    </Grid>
+</ContentPage>
