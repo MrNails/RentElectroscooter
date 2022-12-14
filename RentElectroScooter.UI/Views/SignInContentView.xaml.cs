@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 
 namespace RentElectroScooter.UI.Views
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SignInContentView : ContentView
     {
         private Command _moveToRegistrationViewCommand;
@@ -24,6 +23,8 @@ namespace RentElectroScooter.UI.Views
             VerticalOptions = LayoutOptions.Center;
             HorizontalOptions = LayoutOptions.Center;
         }
+
+        public UserVM UserVM => (UserVM)BindingContext;
 
         public Command MoveToRegistrationViewCommand
         {

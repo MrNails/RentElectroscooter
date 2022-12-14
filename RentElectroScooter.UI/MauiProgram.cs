@@ -8,6 +8,7 @@ using Serilog.Events;
 using Microsoft.Extensions.Logging;
 using System.Text;
 using RentElectroScooter.UI.Views;
+using RentElectroScooter.UI.Views.Pages;
 
 namespace RentElectroScooter.UI;
 
@@ -31,6 +32,7 @@ public static class MauiProgram
 
         builder.Logging.AddSerilog(SetupLogger(builder.Configuration), dispose: true);
         builder.Services.AddSingleton<MainPage>()
+            .AddTransient<UserProfilePage>()
             .AddScoped<SignInContentView>()
             .AddScoped<RegisterContentView>()
             .AddScoped<MainPageVM>()
@@ -41,6 +43,8 @@ public static class MauiProgram
             .AddScoped<UserService>();
 
         builder.Services.AddTransient(services => services.GetService<ILoggerProvider>().CreateLogger(string.Empty));
+
+        Routing.RegisterRoute(nameof(UserProfilePage), typeof(UserProfilePage));
 
         return builder.Build();
     }

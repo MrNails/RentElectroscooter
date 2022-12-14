@@ -21,6 +21,8 @@ namespace RentElectroScooter.UI.Views
             HorizontalOptions = LayoutOptions.Center;
         }
 
+        public UserVM UserVM => (UserVM)BindingContext;
+
         public Command MoveToAuthorizationViewCommand
         {
             get => _moveToAuthorizationViewCommand;

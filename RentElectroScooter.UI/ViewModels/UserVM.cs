@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using RentElectroScooter.CoreModels.DTO;
+using RentElectroScooter.CoreModels.Models;
 using RentElectroScooter.UI.Services;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,10 @@ namespace RentElectroScooter.UI.ViewModels
         }
 
         public bool CanAuthorize(AuthData authData) => authData != null;
+
+        public UserProfile UserProfile => _session.UserProfile;
+
+        public Action<UserProfile> Authorized { get; set; }
 
         [RelayCommand(CanExecute = nameof(CanAuthorize))]
         private async Task Authorize(AuthData authData)
@@ -116,5 +121,8 @@ namespace RentElectroScooter.UI.ViewModels
                 IsBusy = false;
             }
         }
+
+        [RelayCommand]
+        private Task GoBack() => Shell.Current.GoToAsync("..", true);
     }
 }

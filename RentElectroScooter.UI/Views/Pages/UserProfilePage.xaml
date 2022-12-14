@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="RentElectroScooter.UI.Views.Pages.UserProfilePage"
+             xmlns:local="clr-namespace:RentElectroScooter.CoreModels.Models;assembly=RentElectroScooter.CoreModels"
+             xmlns:vm="clr-namespace:RentElectroScooter.UI.ViewModels"
+             
+             >
+    <ContentPage.Resources>
+        <Style TargetType="Label">
+            <Setter Property="FontSize" Value="16"/>
+        </Style>
+
+        <Style TargetType="VerticalStackLayout">
+            <Setter Property="Margin" Value="0,10,0,10"/>
+            <Setter Property="Spacing" Value="2" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+        </Style>
+
+        <Style TargetType="HorizontalStackLayout">
+            <Setter Property="Margin" Value="0,5,0,5"/>
+            <Setter Property="Spacing" Value="10" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+        </Style>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <VerticalStackLayout BindingContext="{Binding Path=UserProfile}"
+                             x:DataType="vm:UserVM"
+                             Spacing="10"
+                             Margin="0">
+
+            <VerticalStackLayout HorizontalOptions="Start"
+                                 Spacing="5"
+                                 Margin="10"
+                                 x:DataType="local:UserProfile">
+                <Label x:Name="UserName" 
+                       Text="{Binding Name}" 
+                       FontSize="30"/>
+
+                <Label>
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Registered at: " FontSize="16"/>
+                            <Span Text="{Binding RegistrationAt,StringFormat='{}{0:yyyy-MM-dd HH:mm}'}" FontSize="16"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+            </VerticalStackLayout>
+
+            <Line HeightRequest="2"
+                  BackgroundColor="{StaticResource Gray500}"/>
+
+            <Grid Margin="10"
+                  x:DataType="local:UserProfile">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <HorizontalStackLayout Grid.Row="0" Grid.ColumnSpan="2">
+                    <Label Text="Balance:"/>
+                    <Label Text="{Binding Balance, StringFormat='{0:f2} UAH'}"
+                           FontAttributes="Bold"/>
+                </HorizontalStackLayout>
+
+                <VerticalStackLayout Grid.Row="1" Grid.Column="0">
+                    <Label Text="Total driven distance"/>
+                    <Label Text="{Binding TotalDrivenDistance, StringFormat='{0:f2} km'}"
+                           FontAttributes="Bold"/>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Grid.Row="1" Grid.Column="1">
+                    <Label Text="Today driven distance"/>
+                    <Label Text="{Binding TodayDrivenDistance, StringFormat='{0:f2} km'}"
+                           FontAttributes="Bold"/>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Grid.Row="2" Grid.Column="0">
+                    <Label Text="Total driven distance"/>
+                    <Label Text="{Binding TotalDrivenTime}"
+                           FontAttributes="Bold"/>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Grid.Row="2" Grid.Column="1">
+                    <Label Text="Today driven distance"/>
+                    <Label Text="{Binding TodayDrivenTime}"
+                           FontAttributes="Bold"/>
+                </VerticalStackLayout>
+
+                <HorizontalStackLayout Grid.Row="3" Grid.ColumnSpan="2" >
+                    <Label Text="Active subscription:"/>
+                    <Label Text="{Binding Subscription.SubscriptionMetadata.Name, FallbackValue=None}"/>
+                </HorizontalStackLayout>
+
+                <HorizontalStackLayout Grid.Row="4" Grid.ColumnSpan="2" >
+                    <Label Text="Active special propositions amount:"/>
+                    <Label Text="{Binding SpecialPropositions.Count, FallbackValue=0}"/>
+                </HorizontalStackLayout>
+            </Grid>
+        </VerticalStackLayout>
+    </ContentPage.Content>
+</ContentPage>

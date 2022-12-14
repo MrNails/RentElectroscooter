@@ -12,7 +12,7 @@
 
         public UserProfile()
         {
-            SpecialPropositions = Enumerable.Empty<SpecialProposition>();
+            SpecialPropositions = new HashSet<SpecialProposition>();
             RegistrationAt = DateTime.UtcNow;
         }
 
@@ -115,7 +115,7 @@
         }
         public DateTime Modified { get; set; }
 
-        public virtual IEnumerable<SpecialProposition>? SpecialPropositions { get; set; }
+        public virtual ICollection<SpecialProposition>? SpecialPropositions { get; set; }
 
         public virtual Subscription? Subscription { get; set; }
     }

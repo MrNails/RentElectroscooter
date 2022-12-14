@@ -11,6 +11,7 @@ using RentElectroScooter.CoreModels.DTO;
 using Microsoft.Extensions.Logging;
 using RentElectroScooter.UI.Views;
 using Microsoft.Extensions.DependencyInjection;
+using RentElectroScooter.UI.Views.Pages;
 
 namespace RentElectroScooter.UI.ViewModels
 {
@@ -143,7 +144,7 @@ namespace RentElectroScooter.UI.ViewModels
         private void SetSelectedItem(ElectroScooter electroScooter) => CurrentIndex = Items.IndexOf(electroScooter);
 
         [RelayCommand(CanExecute = nameof(CanMoveToProfilePage))]
-        private void MoveToProfilePage(Layout contentViewContainer)
+        private async void MoveToProfilePage(Layout contentViewContainer)
         {
             try
             {
@@ -151,10 +152,32 @@ namespace RentElectroScooter.UI.ViewModels
                 contentViewContainer.ZIndex = 2;
                 contentViewContainer.IsVisible = true;
 
+                if (_session.UserProfile == null)
+                {
+                    _session.UserProfile = new UserProfile
+                    {
+                        Name = "Test",
+                        Balance = 100,
+                        RegistrationAt = DateTime.Now.AddMinutes(-Random.Shared.Next(1000, 30000)),
+                        TotalDrivenTime = TimeSpan.FromMinutes(Random.Shared.Next(30, 600)),
+                        TotalDrivenDistance = (float)Random.Shared.NextDouble() * 10,
+                        UserId = Guid.NewGuid(),
+                    };
+                }
+
                 if (UserProfile == null)
                 {
                     var authCV = _serviceProvider.GetService<SignInContentView>();
                     var regCV = _serviceProvider.GetService<RegisterContentView>();
+
+                    authCV.UserVM.Authorized = regCV.UserVM.Authorized =
+                        async up =>
+                        {
+                            await Shell.Current.GoToAsync(new ShellNavigationState(nameof(UserProfilePage)), true);
+                            contentViewContainer.Children.Clear();
+                            contentViewContainer.ZIndex = -1;
+                            contentViewContainer.IsVisible = false;
+                        };
 
                     authCV.MoveToRegistrationViewCommand ??= new Command(obj =>
                     {
@@ -169,6 +192,13 @@ namespace RentElectroScooter.UI.ViewModels
                     });
 
                     contentViewContainer.Children.Add(authCV);
+                }
+                else
+                {
+                    await Shell.Current.GoToAsync(new ShellNavigationState(nameof(UserProfilePage)), true);
+                    contentViewContainer.Children.Clear();
+                    contentViewContainer.ZIndex = -1;
+                    contentViewContainer.IsVisible = false;
                 }
             }
             catch (Exception ex)

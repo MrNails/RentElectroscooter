@@ -115,8 +115,9 @@
         </Grid>
 
         <VerticalStackLayout x:Name="MenuGrid" 
-              BackgroundColor="White"
-              ZIndex="-1" Spacing="5">
+                             BackgroundColor="White"
+                             ZIndex="-1" Spacing="5"
+                             Padding="10">
 
             <VerticalStackLayout  Margin="0,0,0,10">
                 <VerticalStackLayout.GestureRecognizers>
@@ -134,7 +135,11 @@
             <VerticalStackLayout Spacing="10"
                                  Margin="0,0,0,20">
 
-                <Label Text="Settings" FontSize="14"/>
+                <Label Text="Subscriptions" 
+                        FontSize="14"/>
+
+                <Label Text="Settings" 
+                        FontSize="14"/>
 
             </VerticalStackLayout>
         </VerticalStackLayout>

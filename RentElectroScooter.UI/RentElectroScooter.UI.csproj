@@ -72,6 +72,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Views\Pages\UserProfilePage.xaml">
+	    <Generator></Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\RegisterContentView.xaml">
 	    <Generator></Generator>
 	  </MauiXaml>
