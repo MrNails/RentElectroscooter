@@ -8,6 +8,7 @@ using RentElectroScooter.CoreModels.Models;
 using RentElectroScooter.DAL.Repositories;
 using System.Reflection.Metadata;
 using System.Text;
+using RentElectroScooter.CoreModels;
 
 namespace RentElectroScooter.API.Controllers
 {
@@ -34,9 +35,14 @@ namespace RentElectroScooter.API.Controllers
             var dbConnection = _dBContext.Database.GetDbConnection();
 
             var query = new StringBuilder(@"
-SELECT Id, UserId, Name, Position_Lattitude, Position_Longitude, BatteryCharge, 
-Status, Description, AdditionlDataId, Modified, Created
-FROM RentElectroScooterDB.dbo.ElectroScooters
+SELECT es.Id, es.UserId, es.Name, es.BatteryCharge, 
+es.Status, es.Description, es.AdditionalDataId, es.Modified, es.Created,
+es.Id, es.Position_Latitude as Latitude, es.Position_Longitude as Longitude,
+vd.Id, vd.[ManufacturerName], vd.[MaxBatteryCharge], vd.[MaxLoadWeight], 
+vd.[MaxSpeed], vd.[PricePerTime], vd.[Time], vd.[TimeUnits]
+FROM RentElectroScooterDB.dbo.ElectroScooters es
+    INNER JOIN
+[RentElectroScooterDB].[dbo].[VehicleDatas] vd ON vd.Id = es.AdditionalDataId
 WHERE ");
 
             var dbArgs = new DynamicParameters();
@@ -52,23 +58,34 @@ WHERE ");
 
                 if (fieldCondition.Value != null)
                 {
-                    query.AppendFormat("{0} = {1} {2}, ",
+                    query.AppendFormat("{0} = {1} {2} ",
                         SQLHelpers.AddColumnBracket(fieldCondition.FieldName, _dBContext.UsingDatabase),
-                        tmpParName, SQLHelpers.GetComprasionOperation(fieldCondition.ComprasionType));
+                        tmpParName,
+                        i < fieldConditions.Length - 1
+                            ? SQLHelpers.GetComprasionOperation(fieldCondition.ComprasionType)
+                            : string.Empty);
 
                     dbArgs.Add(tmpParName, fieldCondition.Value);
                 }
                 else
                 {
-                    query.AppendFormat("{0} IS NULL {1}, ",
+                    query.AppendFormat("{0} IS NULL {1} ",
                         SQLHelpers.AddColumnBracket(fieldCondition.FieldName, _dBContext.UsingDatabase),
-                        SQLHelpers.GetComprasionOperation(fieldCondition.ComprasionType));
+                        i < fieldConditions.Length - 1
+                            ? SQLHelpers.GetComprasionOperation(fieldCondition.ComprasionType)
+                            : string.Empty);
                 }
             }
 
             query.Remove(query.Length - 2, 2);
 
-            return Ok(await dbConnection.QueryAsync<ElectroScooter>(query.ToString(), dbArgs));
+            return Ok(await dbConnection.QueryAsync<ElectroScooter, Coordinate, VehicleData, ElectroScooter>(query.ToString(),
+                (es, c, vd) =>
+                { 
+                    es.Position = c;
+                    es.AdditionalData = vd;
+                    return es; },
+                dbArgs));
         }
 
         [AllowAnonymous]
@@ -87,6 +104,10 @@ WHERE ");
         public async Task<ActionResult> RentElectroScooter(Guid electroScooterId)
         {
             var userId = new Guid(GetAuthtorizedUserId());
+
+            if (await _dBContext.ElectroScooters.FirstOrDefaultAsync(es => es.UserId == userId) != null)
+                return StatusCode(StatusCodes.Status409Conflict, "There is renting electroscooter.");
+
             var electroScooter = await _dBContext.ElectroScooters.FirstOrDefaultAsync(es => es.Id == electroScooterId);
 
             if (electroScooter == null)
@@ -99,6 +120,7 @@ WHERE ");
                 return BadRequest($"Vehicle has {electroScooter.Status} status.");
 
             electroScooter.UserId = userId;
+            electroScooter.Status = VehicleStatus.Occupied;
 
             await _dBContext.SaveChangesAsync();
 
@@ -119,6 +141,10 @@ WHERE ");
                 return StatusCode(StatusCodes.Status409Conflict, $"Specified electroscooter is not using by user {userIdS}.");
 
             electroScooter.UserId = null;
+
+            electroScooter.Status = electroScooter.BatteryCharge < electroScooter.AdditionalData.MaxBatteryCharge * 0.1
+                ? VehicleStatus.Discharged
+                : VehicleStatus.Available;
 
             await _dBContext.SaveChangesAsync();
 
