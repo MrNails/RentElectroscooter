@@ -64,17 +64,33 @@ namespace RentElectroScooter.UI.ViewModels
                     new FieldCondition
                     {
                         FieldName = nameof(ElectroScooter.Status),
-                        Value = VehicleStatus.Available.ToString(),
-                        ComprasionType = ComprasionType.AND
+                        Value = ((int)VehicleStatus.Available).ToString(),
+                        ComprasionType = ComprasionType.OR
                     }
                 };
+
+                if (_session.UserProfile != null)
+                {
+                    conditions.Add(new FieldCondition
+                    {
+                        FieldName = nameof(ElectroScooter.UserId),
+                        Value = _session.UserProfile.UserId.ToString(),
+                        ComprasionType = ComprasionType.AND
+                    });
+                }
+
                 var electroScooters = await _electroScooterService.GetElectroScootersAsync(_session.Jwt, conditions);
+
+                Items.Clear();
 
                 foreach (var scooter in electroScooters)
                     Items.Add(scooter);
             }
             catch (Exception ex)
             {
+                await App.Current.MainPage.DisplayAlert("Error", "Error loading electro scooters.", "OK")
+                    .ConfigureAwait(false);
+
                 _logger.LogError(ex, "Error loading electro scooters.");
             }
             finally
@@ -95,13 +111,15 @@ namespace RentElectroScooter.UI.ViewModels
                 if (result != string.Empty)
                 {
                     _logger.LogError("Cannot rent scooter: {Message}", result);
-                    await Shell.Current.DisplayAlert("Error", "Error renting specified electro scooter. Try again!", "OK");
+                    await App.Current.MainPage.DisplayAlert("Error", "Error renting specified electro scooter. Try again!", "OK");
                 }
                 else
                     CurrentElement.UserId = _session.UserProfile.UserId;
             }
             catch (Exception ex)
             {
+                await App.Current.MainPage.DisplayAlert("Error", "Error renting specified electro scooter. Try again!", "OK");
+
                 _logger.LogError(ex, "Error renting electro scooter {ElectroScooterId}.", CurrentElement.Id);
             }
             finally
@@ -117,18 +135,20 @@ namespace RentElectroScooter.UI.ViewModels
             {
                 IsBusy = _isInternalLoad = true;
 
-                var result = await _electroScooterService.RentElectroScooterAsync(_session.Jwt, electroScooter);
+                var result = await _electroScooterService.ReturnElectroScooterAsync(_session.Jwt, electroScooter);
 
                 if (result != string.Empty)
                 {
-                    _logger.LogError("Cannot rent scooter: {Message}", result);
-                    await Shell.Current.DisplayAlert("Error", "Error renting specified electro scooter. Try again!", "OK");
+                    _logger.LogError("Cannot return scooter: {Message}", result);
+                    await App.Current.MainPage.DisplayAlert("Error", "Error returning specified electro scooter. Try again!", "OK");
                 }
                 else
-                    CurrentElement.UserId = _session.UserProfile.UserId;
+                    CurrentElement.UserId = null;
             }
             catch (Exception ex)
             {
+                await App.Current.MainPage.DisplayAlert("Error", "Error returning specified electro scooter. Try again!", "OK");
+
                 _logger.LogError(ex, "Error renting electro scooter {ElectroScooterId}.", CurrentElement.Id);
             }
             finally
@@ -144,7 +164,7 @@ namespace RentElectroScooter.UI.ViewModels
         private void SetSelectedItem(ElectroScooter electroScooter) => CurrentIndex = Items.IndexOf(electroScooter);
 
         [RelayCommand(CanExecute = nameof(CanMoveToProfilePage))]
-        private async void MoveToProfilePage(Layout contentViewContainer)
+        private async Task MoveToProfilePage(Layout contentViewContainer)
         {
             try
             {
@@ -152,18 +172,18 @@ namespace RentElectroScooter.UI.ViewModels
                 contentViewContainer.ZIndex = 2;
                 contentViewContainer.IsVisible = true;
 
-                if (_session.UserProfile == null)
-                {
-                    _session.UserProfile = new UserProfile
-                    {
-                        Name = "Test",
-                        Balance = 100,
-                        RegistrationAt = DateTime.Now.AddMinutes(-Random.Shared.Next(1000, 30000)),
-                        TotalDrivenTime = TimeSpan.FromMinutes(Random.Shared.Next(30, 600)),
-                        TotalDrivenDistance = (float)Random.Shared.NextDouble() * 10,
-                        UserId = Guid.NewGuid(),
-                    };
-                }
+                //if (_session.UserProfile == null)
+                //{
+                //    _session.UserProfile = new UserProfile
+                //    {
+                //        Name = "Test",
+                //        Balance = 100,
+                //        RegistrationAt = DateTime.Now.AddMinutes(-Random.Shared.Next(1000, 30000)),
+                //        TotalDrivenTime = TimeSpan.FromMinutes(Random.Shared.Next(30, 600)),
+                //        TotalDrivenDistance = (float)Random.Shared.NextDouble() * 10,
+                //        UserId = Guid.NewGuid(),
+                //    };
+                //}
 
                 if (UserProfile == null)
                 {
@@ -203,8 +223,20 @@ namespace RentElectroScooter.UI.ViewModels
             }
             catch (Exception ex)
             {
+                await App.Current.MainPage.DisplayAlert("Error", "An error occured while moving to profile page.", "OK");
+
                 _logger.LogError(ex, "Move to profile error.");
             }
+        }
+
+        [RelayCommand]
+        private async Task MoveToESAdditionalInfoPage(ElectroScooter electroScooter)
+        {
+            await Shell.Current.GoToAsync(new ShellNavigationState(nameof(ESAdditionalInfoPage)), true,
+                new Dictionary<string, object>
+                {
+                    { "AdditionalInfo", electroScooter.AdditionalData }
+                });
         }
 
         private void Items_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

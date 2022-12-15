@@ -3,24 +3,22 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="RentElectroScooter.UI.Views.Pages.UserProfilePage"
              xmlns:local="clr-namespace:RentElectroScooter.CoreModels.Models;assembly=RentElectroScooter.CoreModels"
-             xmlns:vm="clr-namespace:RentElectroScooter.UI.ViewModels"
-             
-             >
+             xmlns:vm="clr-namespace:RentElectroScooter.UI.ViewModels">
     <ContentPage.Resources>
         <Style TargetType="Label">
             <Setter Property="FontSize" Value="16"/>
         </Style>
 
         <Style TargetType="VerticalStackLayout">
-            <Setter Property="Margin" Value="0,10,0,10"/>
+            <Setter Property="Margin" Value="5,10,5,10"/>
             <Setter Property="Spacing" Value="2" />
-            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="HorizontalOptions" Value="CenterAndExpand" />
         </Style>
 
         <Style TargetType="HorizontalStackLayout">
             <Setter Property="Margin" Value="0,5,0,5"/>
             <Setter Property="Spacing" Value="10" />
-            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="HorizontalOptions" Value="CenterAndExpand" />
         </Style>
     </ContentPage.Resources>
     <ContentPage.Content>

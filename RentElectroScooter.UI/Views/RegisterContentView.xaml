@@ -72,6 +72,10 @@
                         </MultiBinding>
                     </Button.CommandParameter>
                 </Button>
+
+                <ActivityIndicator Grid.RowSpan="8"
+                                   IsVisible="{Binding IsBusy}" 
+                                   IsRunning="{Binding IsBusy}"/>
             </Grid>
         </Border>
     </ContentView.Content>

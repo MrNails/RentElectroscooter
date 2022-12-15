@@ -16,7 +16,7 @@ namespace RentElectroScooter.UI.Services
 
         public UserService(IConfiguration configuration)
         {
-            _httpClient = new HttpClient { BaseAddress = new Uri($"{configuration["Host"]}/api/User") };
+            _httpClient = new HttpClient { BaseAddress = new Uri($"{configuration["Host"]}/api/User/") };
         }
 
         public async Task<(string, System.Net.HttpStatusCode)> Authenticate(AuthData authData)
@@ -49,9 +49,9 @@ namespace RentElectroScooter.UI.Services
         {
             if (string.IsNullOrEmpty(jwt)) throw new ArgumentException("Jwt cannot be empty.");
 
-            using var requestMsg = new HttpRequestMessage(HttpMethod.Post, "profile");
+            using var requestMsg = new HttpRequestMessage(HttpMethod.Get, "profile");
 
-            requestMsg.Headers.Add("Bearer", jwt);
+            requestMsg.Headers.Add("Authorization", $"Bearer {jwt}");
 
             var result = await _httpClient.SendAsync(requestMsg);
 

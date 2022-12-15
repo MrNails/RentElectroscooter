@@ -13,6 +13,9 @@ namespace RentElectroScooter.DAL.Configurations
                 .IsClustered(false)
                 .HasName("PK_NC_ElectroScooter_Id");
 
+            builder.HasIndex(e => e.UserId)
+                .HasDatabaseName("IX_NC_ElectroScooter_UserId");
+
             builder.Property(x => x.Name)
                 .HasColumnType("nvarchar")
                 .HasMaxLength(20);

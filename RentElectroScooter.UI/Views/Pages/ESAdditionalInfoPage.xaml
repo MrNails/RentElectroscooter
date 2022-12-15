@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="RentElectroScooter.UI.Views.Pages.ESAdditionalInfoPage"
+             xmlns:local="clr-namespace:RentElectroScooter.CoreModels.Models;assembly=RentElectroScooter.CoreModels">
+    <ContentPage.Resources>
+        <Style TargetType="Span">
+            <Setter Property="FontSize" Value="16"/>
+        </Style>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <VerticalStackLayout Spacing="10"
+                             x:DataType="local:VehicleData"
+                             VerticalOptions="CenterAndExpand">
+            <Label>
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Manufacturer name: "/>
+                        <Span Text="{Binding ManufacturerName}"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+
+            <Label>
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Max battery charge: "/>
+                        <Span Text="{Binding MaxBatteryCharge, StringFormat='{0:F2}%'}"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+
+            <Label>
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Max load weight: "/>
+                        <Span Text="{Binding MaxLoadWeight, StringFormat='{0:F2} Kg'}"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+
+            <Label>
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Max speed : "/>
+                        <Span Text="{Binding MaxSpeed, StringFormat='{0:F2} km\h'}"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+        </VerticalStackLayout>
+    </ContentPage.Content>
+</ContentPage>

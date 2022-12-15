@@ -18,17 +18,13 @@ namespace RentElectroScooter.UI.Services
 
         public ElectroScooterService(IConfiguration configuration)
         {
-            _httpClient = new HttpClient { BaseAddress = new Uri($"{configuration["Host"]}/api/ElectroScooter") };
+            _httpClient = new HttpClient { BaseAddress = new Uri($"{configuration["Host"]}/api/ElectroScooter/") };
         }
 
         public async Task<List<ElectroScooter>> GetElectroScootersAsync(string jwt, IEnumerable<FieldCondition> fieldConditions)
         {
-            if (string.IsNullOrEmpty(jwt))
-                throw new ArgumentException("Jwt cannot be empty.");
-
             using var requestMsg = new HttpRequestMessage(HttpMethod.Post, "electroscooters");
 
-            requestMsg.Headers.Add("Bearer", jwt);
             requestMsg.Content = JsonContent.Create(fieldConditions);
 
             var result = await _httpClient.SendAsync(requestMsg);
@@ -44,7 +40,22 @@ namespace RentElectroScooter.UI.Services
 
             using var requestMsg = new HttpRequestMessage(HttpMethod.Post, queryUri);
 
-            requestMsg.Headers.Add("Bearer", jwt);
+            requestMsg.Headers.Add("Authorization", $"Bearer {jwt}");
+
+            var result = await _httpClient.SendAsync(requestMsg);
+
+            return await result.Content.ReadAsStringAsync();
+        }
+
+        public async Task<string> ReturnElectroScooterAsync(string jwt, ElectroScooter electroScooter)
+        {
+            if (electroScooter == null) throw new ArgumentNullException(nameof(electroScooter));
+
+            var queryUri = new Uri($"electroscooter?electroScooterId={electroScooter.Id}");
+
+            using var requestMsg = new HttpRequestMessage(HttpMethod.Patch, queryUri);
+
+            requestMsg.Headers.Add("Authorization", $"Bearer {jwt}");
 
             var result = await _httpClient.SendAsync(requestMsg);
 

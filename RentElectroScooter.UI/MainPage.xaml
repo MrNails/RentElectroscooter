@@ -4,9 +4,12 @@
              x:Class="RentElectroScooter.UI.MainPage"
              xmlns:vm="clr-namespace:RentElectroScooter.UI.ViewModels"
              xmlns:local="clr-namespace:RentElectroScooter.CoreModels.Models;assembly=RentElectroScooter.CoreModels"
+             xmlns:converters="clr-namespace:RentElectroScooter.UI.Services.Converters"
              Appearing="ContentPage_Appearing"
              x:Name="MainPageCP">
     <ContentPage.Resources>
+        <converters:IsNullConverter x:Key="IsNullConvert"/>
+
         <Style x:Key="MainScreenButton" TargetType="Button">
             <Setter Property="FontSize" Value="22"/>
             <Setter Property="Padding" Value="7"/>
@@ -50,7 +53,7 @@
                     <Label.FormattedText>
                         <FormattedString>
                             <Span Text="Balance: "/>
-                            <Span Text="{Binding UserProfile.Balance, FallbackValue=0, Mode=OneWay}"/>
+                            <Span Text="{Binding UserProfile.Balance, FallbackValue='0 UAH', StringFormat='{0:F2} UAH', Mode=OneWay}"/>
                         </FormattedString>
                     </Label.FormattedText>
                 </Label>
@@ -64,7 +67,11 @@
                         <DataTemplate>
                             <ViewCell x:DataType="local:ElectroScooter">
                                 <ViewCell.ContextActions>
-                                    <MenuItem Text="Additional Info" />
+                                    <MenuItem BindingContext="{Binding Source={x:Reference MainPageCP}, Path=BindingContext}"
+                                              x:DataType="vm:MainPageVM"
+                                              Text="Additional information"
+                                              Command="{Binding MoveToESAdditionalInfoPageCommand}"
+                                              CommandParameter="{Binding CurrentElement}"/>
                                 </ViewCell.ContextActions>
                                 <VerticalStackLayout Spacing="5">
                                     <Label FontSize="16">
@@ -83,6 +90,39 @@
                                             </FormattedString>
                                         </Label.FormattedText>
                                     </Label>
+                                    <Label FontSize="16">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="BatteryCharge: "/>
+                                                <Span Text="{Binding BatteryCharge,StringFormat='{0:F2}%'}"/>
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+
+                                    <Label FontSize="16">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="Pricing: "/>
+                                                <Span>
+                                                    <Span.Text>
+                                                        <MultiBinding StringFormat="'{0} UAH per {1} {2}'">
+                                                            <Binding Path="AdditionalData.PricePerTime"/>
+                                                            <Binding Path="AdditionalData.Time"/>
+                                                            <Binding Path="AdditionalData.TimeUnits"/>
+                                                        </MultiBinding>
+                                                    </Span.Text>
+                                                </Span>
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+
+                                    <VerticalStackLayout.Triggers>
+                                        <DataTrigger TargetType="VerticalStackLayout"
+                                                     Binding="{Binding UserId, Converter={StaticResource IsNullConvert}}"
+                                                     Value="False">
+                                            <Setter Property="BackgroundColor" Value="{StaticResource Gray200}"/>
+                                        </DataTrigger>
+                                    </VerticalStackLayout.Triggers>
                                 </VerticalStackLayout>
                             </ViewCell>
                         </DataTemplate>

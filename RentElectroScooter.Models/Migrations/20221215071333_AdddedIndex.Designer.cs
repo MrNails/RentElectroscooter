@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RentElectroScooter.DAL.Repositories;
 
@@ -11,9 +12,11 @@ using RentElectroScooter.DAL.Repositories;
 namespace RentElectroScooter.DAL.Migrations
 {
     [DbContext(typeof(RentElectroscooterDBContext))]
-    partial class RentElectroscooterDBContextModelSnapshot : ModelSnapshot
+    [Migration("20221215071333_AdddedIndex")]
+    partial class AdddedIndex
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

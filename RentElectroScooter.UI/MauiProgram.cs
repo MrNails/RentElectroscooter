@@ -45,6 +45,7 @@ public static class MauiProgram
         builder.Services.AddTransient(services => services.GetService<ILoggerProvider>().CreateLogger(string.Empty));
 
         Routing.RegisterRoute(nameof(UserProfilePage), typeof(UserProfilePage));
+        Routing.RegisterRoute(nameof(ESAdditionalInfoPage), typeof(ESAdditionalInfoPage));
 
         return builder.Build();
     }

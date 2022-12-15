@@ -2,6 +2,9 @@
 
 public sealed class Coordinate : IEquatable<Coordinate>
 {
+    public Coordinate() : this(0, 0)
+    {}
+
     public Coordinate(float latitude, float longitude)
     {
         Latitude = latitude;
@@ -13,7 +16,7 @@ public sealed class Coordinate : IEquatable<Coordinate>
 
     public bool Equals(Coordinate? other) => !ReferenceEquals(other, null) && Longitude.Equals(other.Longitude) && Latitude.Equals(other.Latitude);
 
-    public override string ToString() => $"[{Longitude},{Latitude}]";
+    public override string ToString() => $"[{Longitude};{Latitude}]";
 
     public override bool Equals(object? obj) => obj is Coordinate other && Equals(other);
     public override int GetHashCode() => HashCode.Combine(Longitude, Latitude);

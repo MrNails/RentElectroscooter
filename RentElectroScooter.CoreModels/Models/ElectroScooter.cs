@@ -85,6 +85,7 @@ public class ElectroScooter : BindableModel
         }
     }
 
+    public int AdditionalDataId { get; set; }
     public VehicleData AdditionalData
     {
         get => m_additionalData;

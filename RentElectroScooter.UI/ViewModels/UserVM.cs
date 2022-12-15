@@ -65,13 +65,16 @@ namespace RentElectroScooter.UI.ViewModels
 
                     if (userProfileRes.Item2 != System.Net.HttpStatusCode.OK)
                     {
-                        _logger.LogError("Cannot retreive user profile. {CodeText}({Code})", 
+                        _logger.LogError("Cannot retreive user profile. {CodeText}({Code})",
                             userProfileRes.Item2.ToString(), ((int)authRes.Item2).ToString());
 
                         await App.Current.MainPage.DisplayAlert("Error", $"Cannot retreive user profile.", "OK");
                     }
                     else
+                    {
                         _session.UserProfile = userProfileRes.Item1;
+                        Authorized?.Invoke(_session.UserProfile);
+                    }
                 }
             }
             catch (Exception ex)
@@ -108,6 +111,21 @@ namespace RentElectroScooter.UI.ViewModels
                 else
                 {
                     _session.Jwt = authRes.Item1;
+
+                    var userProfileRes = await _userService.GetProfile(_session.Jwt);
+
+                    if (userProfileRes.Item2 != System.Net.HttpStatusCode.OK)
+                    {
+                        _logger.LogError("Cannot retreive user profile. {CodeText}({Code})",
+                            userProfileRes.Item2.ToString(), ((int)authRes.Item2).ToString());
+
+                        await App.Current.MainPage.DisplayAlert("Error", $"Cannot retreive user profile.", "OK");
+                    }
+                    else
+                    {
+                        _session.UserProfile = userProfileRes.Item1;
+                        Authorized?.Invoke(_session.UserProfile);
+                    }
                 }
             }
             catch (Exception ex)
@@ -121,8 +139,5 @@ namespace RentElectroScooter.UI.ViewModels
                 IsBusy = false;
             }
         }
-
-        [RelayCommand]
-        private Task GoBack() => Shell.Current.GoToAsync("..", true);
     }
 }
