@@ -6,7 +6,7 @@
              xmlns:dto="clr-namespace:RentElectroScooter.CoreModels.DTO;assembly=RentElectroScooter.CoreModels"
              xmlns:converters="clr-namespace:RentElectroScooter.UI.Services.Converters"
              WidthRequest="300"
-             HeightRequest="450"
+             HeightRequest="500"
              x:Name="RegisterCV">
     <ContentView.Resources>
         <converters:RegistrationDataConverter x:Key="RegistrationDataConvert"/>
@@ -19,6 +19,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="0.9*"/>
+                    <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
@@ -43,6 +44,12 @@
 
                 <VerticalStackLayout Grid.Row="3" 
                                      Style="{StaticResource AuthStackLayoutStyle}">
+                    <Label Text="Repeat password"/>
+                    <Entry x:Name="PasswordRepeatEntry" IsPassword="True"/>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Grid.Row="4" 
+                                     Style="{StaticResource AuthStackLayoutStyle}">
                     <Label Text="Name"/>
                     <Entry x:Name="NameEntry" />
 
@@ -59,7 +66,7 @@
                             Command="{Binding MoveToAuthorizationViewCommand}"/>
                 </VerticalStackLayout>
 
-                <Button Grid.Row="4" Text="Accept" 
+                <Button Grid.Row="5" Text="Accept" 
                         WidthRequest="200"
                         VerticalOptions="Center"
                         HorizontalOptions="Center"
@@ -68,6 +75,7 @@
                         <MultiBinding Converter="{StaticResource RegistrationDataConvert}">
                             <Binding Source="{x:Reference LoginEntry}" Path="Text"/>
                             <Binding Source="{x:Reference PasswordEntry}" Path="Text"/>
+                            <Binding Source="{x:Reference PasswordRepeatEntry}" Path="Text"/>
                             <Binding Source="{x:Reference NameEntry}" Path="Text"/>
                         </MultiBinding>
                     </Button.CommandParameter>

@@ -8,6 +8,7 @@ public class ElectroScooter : BindableModel
     private float m_batteryCharge;
     private VehicleStatus m_status;
     private VehicleData m_additionalData;
+    private Guid? _userId;
 
     public ElectroScooter()
     {
@@ -16,7 +17,16 @@ public class ElectroScooter : BindableModel
     }
 
     public Guid Id { get; set; }
-    public Guid? UserId { get; set; }
+    public Guid? UserId
+    {
+        get => _userId;
+        set
+        {
+            _userId = value;
+
+            OnPropertyChanged();
+        }
+    }
 
     public string Name
     {
@@ -33,7 +43,7 @@ public class ElectroScooter : BindableModel
             OnPropertyChanged();
         }
     }
-    
+
     public Coordinate Position
     {
         get => m_position;
@@ -56,7 +66,7 @@ public class ElectroScooter : BindableModel
             m_errors[nameof(BatteryCharge)] = value < 0
                 ? "Battery charge cannot be less then 0."
                 : string.Empty;
-            
+
             m_batteryCharge = value;
             OnPropertyChanged();
         }
@@ -72,31 +82,31 @@ public class ElectroScooter : BindableModel
             OnPropertyChanged();
         }
     }
-    
+
     public string? Description
     {
         get => m_description;
         set
         {
             if (m_description == value) return;
-                
+
             m_description = value;
             OnPropertyChanged();
         }
     }
 
     public int AdditionalDataId { get; set; }
-    public VehicleData AdditionalData
+    public virtual VehicleData AdditionalData
     {
         get => m_additionalData;
         set
         {
             if (Equals(value, m_additionalData)) return;
-            
+
             m_errors[nameof(AdditionalData)] = value == null
                 ? "Electroscooter additional data cannot be null."
                 : string.Empty;
-            
+
             m_additionalData = value;
             OnPropertyChanged();
         }

@@ -1,4 +1,5 @@
 ﻿using RentElectroScooter.CoreModels.DTO;
+using RentElectroScooter.UI.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -12,10 +13,10 @@ namespace RentElectroScooter.UI.Services.Converters
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values == null || values.Length < 3)
+            if (values == null || values.Length < 4)
                 return null;
 
-            return new RegisterData { Login = values[0]?.ToString(), Password = values[1]?.ToString(), Name = values[2]?.ToString() };
+            return new RegData { Login = values[0]?.ToString(), Password = values[1]?.ToString(), PasswordRepeat = values[2]?.ToString(), Name = values[3]?.ToString() };
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

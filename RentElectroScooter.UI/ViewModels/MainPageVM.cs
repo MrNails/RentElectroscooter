@@ -45,7 +45,8 @@ namespace RentElectroScooter.UI.ViewModels
         public bool CanSetSelectedIndex(int idx) => idx >= -1 && idx < Items.Count;
 
         public bool CanRentElectroScooter(ElectroScooter electroScooter)
-            => UserProfile != null && electroScooter != null && electroScooter.UserId == null;
+            => UserProfile != null && electroScooter != null && electroScooter.UserId == null &&
+            Items.FirstOrDefault(i => i.UserId == UserProfile.UserId) == null;
 
         public bool CanReturnElectroScooter(ElectroScooter electroScooter)
             => UserProfile != null && electroScooter != null && electroScooter.UserId == UserProfile.UserId;
@@ -114,7 +115,10 @@ namespace RentElectroScooter.UI.ViewModels
                     await App.Current.MainPage.DisplayAlert("Error", "Error renting specified electro scooter. Try again!", "OK");
                 }
                 else
+                {
                     CurrentElement.UserId = _session.UserProfile.UserId;
+                    _session.UserProfile.Balance -= electroScooter.AdditionalData.PricePerTime;
+                }
             }
             catch (Exception ex)
             {
@@ -237,6 +241,16 @@ namespace RentElectroScooter.UI.ViewModels
                 {
                     { "AdditionalInfo", electroScooter.AdditionalData }
                 });
+        }
+
+        [RelayCommand]
+        private async Task LogOut()
+        {
+            _session.UserProfile = null;
+            _session.Jwt = string.Empty;
+
+            _ = LoadElectroScooters().ConfigureAwait(false);
+            await App.Current.MainPage.DisplayAlert("Information", "Logged out", "OK");
         }
 
         private void Items_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

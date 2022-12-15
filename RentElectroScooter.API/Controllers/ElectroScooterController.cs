@@ -106,18 +106,26 @@ WHERE ");
             var userId = new Guid(GetAuthtorizedUserId());
 
             if (await _dBContext.ElectroScooters.FirstOrDefaultAsync(es => es.UserId == userId) != null)
-                return StatusCode(StatusCodes.Status409Conflict, "There is renting electroscooter.");
+                return StatusCode(StatusCodes.Status409Conflict, "There is renting electro-scooter.");
 
-            var electroScooter = await _dBContext.ElectroScooters.FirstOrDefaultAsync(es => es.Id == electroScooterId);
+            var electroScooter = await _dBContext.ElectroScooters
+                .Include(es => es.AdditionalData)
+                .FirstOrDefaultAsync(es => es.Id == electroScooterId);
+            var userProfile = await _dBContext.UserProfiles.FirstAsync(up => up.UserId == userId);
 
             if (electroScooter == null)
-                return NotFound($"ElectroScooter with id {electroScooterId} does not exists.");
+                return NotFound($"Electro-scooter with id {electroScooterId} does not exists.");
 
             if (electroScooter.UserId != null)
-                return StatusCode(StatusCodes.Status409Conflict, "Specified electroscooter already using.");
+                return StatusCode(StatusCodes.Status409Conflict, "Specified electro-scooter already using.");
 
             if (electroScooter.Status != VehicleStatus.Available)
                 return BadRequest($"Vehicle has {electroScooter.Status} status.");
+
+            if (userProfile.Balance - electroScooter.AdditionalData.PricePerTime < 0)
+                return BadRequest("No enough money to rent electro-scooter");
+
+            userProfile.Balance -= electroScooter.AdditionalData.PricePerTime;
 
             electroScooter.UserId = userId;
             electroScooter.Status = VehicleStatus.Occupied;
@@ -132,7 +140,9 @@ WHERE ");
         {
             var userIdS = GetAuthtorizedUserId();
             var userId = new Guid(userIdS);
-            var electroScooter = await _dBContext.ElectroScooters.FirstOrDefaultAsync(es => es.Id == electroScooterId);
+            var electroScooter = await _dBContext.ElectroScooters
+                .Include(es => es.AdditionalData)
+                .FirstOrDefaultAsync(es => es.Id == electroScooterId);
 
             if (electroScooter == null)
                 return NotFound($"ElectroScooter with id {electroScooterId} does not exists.");

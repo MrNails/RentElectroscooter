@@ -21,10 +21,9 @@ namespace RentElectroScooter.DAL.Repositories
 
         public AvailableDatabases UsingDatabase { get; init; }
 
-        public RentElectroscooterDBContext(DbContextOptions options, AvailableDatabases usingDatabase, bool autoDetectingChanges = true)
+        public RentElectroscooterDBContext(DbContextOptions options, AvailableDatabases usingDatabase)
             : base(options) 
         { 
-            ChangeTracker.AutoDetectChangesEnabled = autoDetectingChanges;
             UsingDatabase = usingDatabase;
         }
 

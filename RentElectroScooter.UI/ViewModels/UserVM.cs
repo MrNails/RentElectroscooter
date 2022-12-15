@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using RentElectroScooter.CoreModels.DTO;
 using RentElectroScooter.CoreModels.Models;
+using RentElectroScooter.UI.Models;
 using RentElectroScooter.UI.Services;
 using System;
 using System.Collections.Generic;
@@ -50,10 +51,10 @@ namespace RentElectroScooter.UI.ViewModels
                 {
                     if (authRes.Item2 != System.Net.HttpStatusCode.Conflict &&
                         authRes.Item2 != System.Net.HttpStatusCode.Unauthorized)
-                    _logger.LogError("Authorization error. {CodeText}({Code}): {Message}", 
-                        authRes.Item2.ToString(), 
-                        ((int)authRes.Item2).ToString(),
-                        authRes.Item1);
+                        _logger.LogError("Authorization error. {CodeText}({Code}): {Message}",
+                            authRes.Item2.ToString(),
+                            ((int)authRes.Item2).ToString(),
+                            authRes.Item1);
 
                     await App.Current.MainPage.DisplayAlert("Error", $"Cannot authorized. {authRes.Item1}", "OK");
                 }
@@ -90,13 +91,24 @@ namespace RentElectroScooter.UI.ViewModels
         }
 
         [RelayCommand]
-        private async Task Register(RegisterData regData)
+        private async Task Register(RegData regData)
         {
+            if (regData.Password != regData.PasswordRepeat)
+            {
+                await App.Current.MainPage.DisplayAlert("Error", "Repeated password not equals with password.", "OK");
+                return;
+            }
+
             try
             {
                 IsBusy = true;
 
-                var authRes = await _userService.Register(regData);
+                var authRes = await _userService.Register(new RegisterData
+                {
+                    Login = regData.Login,
+                    Name = regData.Name,
+                    Password = regData.Password
+                });
 
                 if (authRes.Item2 != System.Net.HttpStatusCode.OK)
                 {

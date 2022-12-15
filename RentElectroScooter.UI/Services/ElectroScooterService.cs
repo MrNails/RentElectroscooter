@@ -36,9 +36,7 @@ namespace RentElectroScooter.UI.Services
         {
             if (electroScooter == null) throw new ArgumentNullException(nameof(electroScooter));
 
-            var queryUri = new Uri($"electroscooter?electroScooterId={electroScooter.Id}");
-
-            using var requestMsg = new HttpRequestMessage(HttpMethod.Post, queryUri);
+            using var requestMsg = new HttpRequestMessage(HttpMethod.Post, $"electroscooter?electroScooterId={electroScooter.Id}");
 
             requestMsg.Headers.Add("Authorization", $"Bearer {jwt}");
 
@@ -51,9 +49,7 @@ namespace RentElectroScooter.UI.Services
         {
             if (electroScooter == null) throw new ArgumentNullException(nameof(electroScooter));
 
-            var queryUri = new Uri($"electroscooter?electroScooterId={electroScooter.Id}");
-
-            using var requestMsg = new HttpRequestMessage(HttpMethod.Patch, queryUri);
+            using var requestMsg = new HttpRequestMessage(HttpMethod.Patch, $"electroscooter?electroScooterId={electroScooter.Id}");
 
             requestMsg.Headers.Add("Authorization", $"Bearer {jwt}");
 

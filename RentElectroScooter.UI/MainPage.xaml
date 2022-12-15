@@ -71,7 +71,7 @@
                                               x:DataType="vm:MainPageVM"
                                               Text="Additional information"
                                               Command="{Binding MoveToESAdditionalInfoPageCommand}"
-                                              CommandParameter="{Binding CurrentElement}"/>
+                                              CommandParameter="{Binding Source={x:Reference AvailableElectroScooters}, Path=SelectedItem}"/>
                                 </ViewCell.ContextActions>
                                 <VerticalStackLayout Spacing="5">
                                     <Label FontSize="16">
@@ -180,6 +180,13 @@
 
                 <Label Text="Settings" 
                         FontSize="14"/>
+
+                <Label Text="Log out" 
+                        FontSize="14">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding LogOutCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
 
             </VerticalStackLayout>
         </VerticalStackLayout>

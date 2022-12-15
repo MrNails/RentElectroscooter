@@ -11,7 +11,7 @@
     <ContentPage.Content>
         <VerticalStackLayout Spacing="10"
                              x:DataType="local:VehicleData"
-                             VerticalOptions="CenterAndExpand">
+                             HorizontalOptions="CenterAndExpand">
             <Label>
                 <Label.FormattedText>
                     <FormattedString>
